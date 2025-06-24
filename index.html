@@ -2,14 +2,53 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>محاكي سلسلة M000000</title>
+  <title>مولّد سلسلة M</title>
+  <style>
+    body {
+      direction: rtl;
+      font-family: Arial;
+      text-align: center;
+      padding: 40px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 18px;
+      margin: 10px;
+    }
+    #result {
+      font-weight: bold;
+      font-size: 20px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-  <h1>محاكاة توليد أكواد M000000,xxxx</h1>
-  <p>هذا المشروع يستخدم خوارزمية تحاكي التذبذب العشوائي والدوري لتوليد أرقام شبيهة بسلسلة معينة.</p>
-  <p>شغّل الكود الموجود في <code>script.py</code> باستخدام بايثون للحصول على النتائج.</p>
-  <pre>
-  python script.py
-  </pre>
+  <h1>محاكي توليد أكواد M000000</h1>
+  <p>أدخل رقم تسلسلي (مثلاً: 0 أو 105 أو 178):</p>
+  
+  <input type="number" id="index" placeholder="رقم M..." min="0" max="999999" />
+  <button onclick="generate()">توليد</button>
+  
+  <p id="result"></p>
+
+  <script>
+    function generate() {
+      const i = parseInt(document.getElementById("index").value);
+      if (isNaN(i)) {
+        document.getElementById("result").innerText = "❌ أدخل رقم صحيح";
+        return;
+      }
+
+      // محاكاة الخوارزمية المبسطة (بدون NumPy)
+      const sin = Math.sin(i / 7) * 3000;
+      const rng = Math.sin(i * 9999.123) * 1000;
+      const last = 1558;
+      const correction = -0.1 * (last - 5500);
+      let val = Math.round(last + sin + rng + correction);
+      val = Math.max(1000, Math.min(9999, val));
+
+      document.getElementById("result").innerText = `M${i.toString().padStart(6, "0")}, ${val}`;
+    }
+  </script>
 </body>
 </html>
