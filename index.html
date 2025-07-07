@@ -2,53 +2,210 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>مولّد سلسلة M</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مولّد أكواد سلسلة M</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
+    /* CSS Variables for easy theme customization */
+    :root {
+      --primary-color: #007bff;
+      --primary-hover: #0056b3;
+      --background-color: #f0f2f5;
+      --card-background: #ffffff;
+      --text-color: #333;
+      --input-border: #ced4da;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
     body {
       direction: rtl;
-      font-family: Arial;
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background-color: var(--card-background);
+      border-radius: 12px;
+      box-shadow: 0 4px R12px var(--shadow-color);
+      overflow: hidden;
       text-align: center;
-      padding: 40px;
+      transition: transform 0.3s ease;
     }
-    input, button {
-      padding: 10px;
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+      padding: 25px 30px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .card-header h1 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .card-header p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    .card-body {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #index {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      font-family: 'Cairo', sans-serif;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      box-sizing: border-box;
+      text-align: center;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #index:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+
+    #generateBtn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
       font-size: 18px;
-      margin: 10px;
+      font-weight: bold;
+      font-family: 'Cairo', sans-serif;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
+
+    #generateBtn:hover {
+      background-color: var(--primary-hover);
+      transform: scale(1.05);
+    }
+
+    .card-footer {
+      padding: 20px 30px;
+      background-color: #f8f9fa;
+      min-height: 65px; /* Reserve space to avoid layout shift */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     #result {
       font-weight: bold;
-      font-size: 20px;
-      color: green;
+      font-size: 22px;
+      margin: 0;
+      transition: color 0.3s ease;
+    }
+
+    #result.success {
+      color: var(--success-color);
+    }
+
+    #result.error {
+      color: var(--error-color);
     }
   </style>
 </head>
 <body>
-  <h1>محاكي توليد أكواد M000000</h1>
-  <p>أدخل رقم تسلسلي (مثلاً: 0 أو 105 أو 178):</p>
-  
-  <input type="number" id="index" placeholder="رقم M..." min="0" max="999999" />
-  <button onclick="generate()">توليد</button>
-  
-  <p id="result"></p>
+
+  <main class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1>✨ مولّد أكواد سلسلة M</h1>
+        <p>أدخل رقمًا تسلسليًا (بين 0 و 999999) لتوليد الكود الموافق له.</p>
+      </div>
+      <div class="card-body">
+        <input type="number" id="index" placeholder="أدخل الرقم التسلسلي هنا..." min="0" max="999999">
+        <button id="generateBtn">توليد الكود</button>
+      </div>
+      <div class="card-footer">
+        <p id="result"></p>
+      </div>
+    </div>
+  </main>
 
   <script>
-    function generate() {
-      const i = parseInt(document.getElementById("index").value);
-      if (isNaN(i)) {
-        document.getElementById("result").innerText = "❌ أدخل رقم صحيح";
-        return;
+    document.addEventListener('DOMContentLoaded', () => {
+      const indexInput = document.getElementById('index');
+      const generateBtn = document.getElementById('generateBtn');
+      const resultEl = document.getElementById('result');
+
+      function generate() {
+        // Clear previous result and classes
+        resultEl.textContent = '';
+        resultEl.classList.remove('success', 'error');
+
+        const i = parseInt(indexInput.value);
+        
+        // Improved validation
+        if (isNaN(i) || indexInput.value === '') {
+          resultEl.textContent = "❌ الرجاء إدخال رقم صحيح";
+          resultEl.classList.add('error');
+          return;
+        }
+        if (i < 0 || i > 999999) {
+          resultEl.textContent = "❌ الرقم يجب أن يكون بين 0 و 999999";
+          resultEl.classList.add('error');
+          return;
+        }
+
+        // The same simplified algorithm
+        const sin = Math.sin(i / 7) * 3000;
+        const rng = Math.sin(i * 9999.123) * 1000;
+        const last = 1558;
+        const correction = -0.1 * (last - 5500);
+        let val = Math.round(last + sin + rng + correction);
+        val = Math.max(1000, Math.min(9999, val));
+
+        resultEl.textContent = `الكود هو: M${i.toString().padStart(6, '0')}, ${val}`;
+        resultEl.classList.add('success');
       }
+      
+      // Event listener for the button click
+      generateBtn.addEventListener('click', generate);
 
-      // محاكاة الخوارزمية المبسطة (بدون NumPy)
-      const sin = Math.sin(i / 7) * 3000;
-      const rng = Math.sin(i * 9999.123) * 1000;
-      const last = 1558;
-      const correction = -0.1 * (last - 5500);
-      let val = Math.round(last + sin + rng + correction);
-      val = Math.max(1000, Math.min(9999, val));
-
-      document.getElementById("result").innerText = `M${i.toString().padStart(6, "0")}, ${val}`;
-    }
+      // Event listener for the 'Enter' key in the input field
+      indexInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          generate();
+        }
+      });
+    });
   </script>
+
 </body>
 </html>
